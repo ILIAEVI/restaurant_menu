@@ -1,0 +1,28 @@
+asgiref @ file:///croot/asgiref_1724072470684/work
+certifi==2024.8.30
+charset-normalizer==3.4.0
+Django @ file:///croot/django_1724964382619/work
+django-environ==0.11.2
+django-filter==24.3
+django-modeltranslation==0.19.10
+django-rosetta==0.10.1
+django-versatileimagefield==3.1
+djangorestframework==3.15.2
+djangorestframework-simplejwt==5.3.1
+drf-yasg==1.21.8
+idna==3.10
+inflection==0.5.1
+packaging==24.2
+pillow==11.0.0
+polib==1.2.0
+psycopg2-binary==2.9.9
+PyJWT==2.9.0
+python-magic==0.4.27
+pytz==2024.2
+PyYAML==6.0.2
+requests==2.32.3
+setuptools==75.1.0
+sqlparse @ file:///work/perseverance-python-buildout/croot/sqlparse_1698874574933/work
+uritemplate==4.1.1
+urllib3==2.2.3
+wheel==0.44.0

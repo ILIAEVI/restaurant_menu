@@ -6,14 +6,14 @@ from rest_framework.response import Response
 from restaurant.models import Restaurant, Menu, MenuCategory, Dish, Ingredient
 from restaurant.serializers import RestaurantSerializer, MenuSerializer, MenuCategorySerializer, \
     DetailRestaurantSerializer, AddMenuSerializer, DishSerializer, DishAndIngredientSerializer
-from restaurant.permissions import IsOwnerOrReadOnly, IsRestaurantOwnerOrReadOnly, IsMenuOwnerOrReadOnly, \
-    IsMenuCategoryOwnerOrReadOnly
+from restaurant.permissions import IsOwnerOrReadOnly
 from restaurant.filters import MenuCategoryFilter, DishesFilter
 
 
 class RestaurantViewSet(viewsets.ModelViewSet):
     queryset = Restaurant.objects.all().order_by('id')
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    query_string = 'user__id'
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -27,7 +27,8 @@ class RestaurantViewSet(viewsets.ModelViewSet):
 
 class MenuViewSet(viewsets.ModelViewSet):
     queryset = Menu.objects.all()
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsRestaurantOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    query_string = 'restaurant__user_id'
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -39,9 +40,10 @@ class MenuViewSet(viewsets.ModelViewSet):
 class MenuCategoryViewSet(viewsets.ModelViewSet):
     queryset = MenuCategory.objects.all()
     serializer_class = MenuCategorySerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsMenuOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = MenuCategoryFilter
+    query_string = 'menu__restaurant__user_id'
 
     def perform_create(self, serializer):
         menu = serializer.validated_data['menu']
@@ -75,9 +77,10 @@ class MenuCategoryViewSet(viewsets.ModelViewSet):
 class DishViewSet(viewsets.ModelViewSet):
     queryset = Dish.objects.all()
     serializer_class = DishSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsMenuCategoryOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = DishesFilter
+    query_string = 'category__menu__restaurant__user_id'
 
     def perform_create(self, serializer):
         category_obj = serializer.validated_data['category']

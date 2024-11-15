@@ -87,11 +87,7 @@ class DishSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         ingredients_data = validated_data.pop('ingredients', [])
 
-        instance.name = validated_data.get('name', instance.name)
-        instance.price = validated_data.get('price', instance.price)
-        instance.photo = validated_data.get('photo', instance.photo)
-        instance.category = validated_data.get('category', instance.category)
-        instance.save()
+        instance = super().update(instance, validated_data)
 
         existing_ingredient_ids = set(Ingredient.objects.filter(dish_id=instance.id).values_list('id', flat=True))
         incoming_ingredient_ids = set()

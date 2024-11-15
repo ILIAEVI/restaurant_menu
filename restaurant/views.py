@@ -72,20 +72,3 @@ class DishViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = DishesFilter
     query_string = 'category__menu__restaurant__user_id'
-
-    def perform_create(self, serializer):
-        category_obj = serializer.validated_data['category']
-
-        if not MenuCategory.objects.filter(id=category_obj.id, menu__restaurant__user=self.request.user).exists():
-            raise PermissionDenied("You do not have permission to perform this action.")
-
-        category_obj = MenuCategory.objects.get(id=category_obj.id)
-
-        serializer.save(category=category_obj)
-
-
-
-class IngredientViewSet(viewsets.ModelViewSet):
-    queryset = Ingredient.objects.all()
-    serializer_class = IngredientSerializer
-

@@ -5,7 +5,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from restaurant.models import Restaurant, Menu, MenuCategory, Dish, Ingredient
 from restaurant.serializers import RestaurantSerializer, MenuSerializer, MenuCategorySerializer, \
-    DetailRestaurantSerializer, AddMenuSerializer, DishSerializer, DishAndIngredientSerializer
+    DetailRestaurantSerializer, AddMenuSerializer, DishSerializer, DishAndIngredientSerializer, IngredientSerializer
 from restaurant.permissions import IsOwnerOrReadOnly
 from restaurant.filters import MenuCategoryFilter, DishesFilter
 
@@ -45,15 +45,6 @@ class MenuCategoryViewSet(viewsets.ModelViewSet):
     filterset_class = MenuCategoryFilter
     query_string = 'menu__restaurant__user_id'
 
-    def perform_create(self, serializer):
-        menu = serializer.validated_data['menu']
-
-        if not Menu.objects.filter(id=menu.id, restaurant__user=self.request.user).exists():
-            raise PermissionDenied("You do not have permission to perform this action.")
-
-        menu = Menu.objects.get(id=menu.id)
-        serializer.save(menu=menu)
-
     @action(
         methods=['get'],
         detail=True,
@@ -91,3 +82,10 @@ class DishViewSet(viewsets.ModelViewSet):
         category_obj = MenuCategory.objects.get(id=category_obj.id)
 
         serializer.save(category=category_obj)
+
+
+
+class IngredientViewSet(viewsets.ModelViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
+
